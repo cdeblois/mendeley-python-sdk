@@ -25,6 +25,9 @@ class MendeleySession(OAuth2Session):
 
        A :class:`Files <mendeley.resources.files.Files>` resource for accessing files in the logged-in user's library.
 
+    .. attribut:: folders
+
+       a :class:`Folders <mendeley.resources.folders.Folders>` resource for accessing folders in the logged-in user's library.
     .. attribute:: groups
 
        A :class:`Groups <mendeley.resources.groups.Groups>` resource for accessing groups that the user is a member of.
@@ -56,9 +59,13 @@ class MendeleySession(OAuth2Session):
         self.catalog = Catalog(self)
         self.documents = Documents(self, None)
         self.files = Files(self)
+        self.folders = Folders(self)
         self.groups = Groups(self)
         self.profiles = Profiles(self)
         self.trash = Trash(self, None)
+
+    def folder_documents(self, folder_id):
+	return FolderDocuments(self, folder_id)
 
     def group_members(self, group_id):
         return GroupMembers(self, group_id)

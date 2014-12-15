@@ -22,7 +22,6 @@ class GetByIdResource(BaseResource):
     def get(self, id, **kwargs):
         url = add_query_params('%s/%s' % (self._url, id), kwargs)
         obj_type = self._obj_type(**kwargs)
-
         rsp = self._session.get(url, headers={'Accept': obj_type.content_type})
 
         return obj_type(self._session, rsp.json())
@@ -51,6 +50,16 @@ class ListResource(BaseResource):
         rsp = self._session.get(url, headers={'Accept': obj_type.content_type})
         return Page(self._session, rsp, obj_type)
 
+    def get(self, id, **kwargs):
+        url = add_query_params('%s/%s' % (self._url, id), kwargs)
+        obj_type = self._obj_type(**kwargs)
+
+        rsp = self._session.get(url, headers={'Accept': obj_type.content_type})
+
+        return obj_type(self._session, rsp.json())
+
+    def get_lazy(self, id, **kwargs):
+        return LazyResponseObject(self._session, id, self._obj_type(**kwargs), lambda: self.get(id, **kwargs))
 
 def add_query_params(url, params):
     scheme, netloc, path, query_string, fragment = urlsplit(url)
